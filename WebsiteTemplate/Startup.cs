@@ -29,13 +29,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebsiteTemplate
 {
-    /*
-     * Todo:
-     * test all functionality (change password etc.)
-     * try using entity framework instead
-     * deadlock warning
-     */
-     
     public class Startup
     {
         #region Fields

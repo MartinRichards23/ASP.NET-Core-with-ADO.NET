@@ -14,8 +14,6 @@ namespace WebsiteTemplate
 {
     /// <summary>
     /// Implementation of custom user store
-    /// https://github.com/aspnet/Identity/tree/85f8a49aef68bf9763cd9854ce1dd4a26a7c5d3c/src/Stores
-    /// https://github.com/aspnet/Identity/blob/85f8a49aef68bf9763cd9854ce1dd4a26a7c5d3c/test/InMemory.Test/InMemoryUserStore.cs
     /// 
     /// </summary>
     public class MyUserStore : IUserStore<User>, IUserPasswordStore<User>, IUserEmailStore<User>, IUserSecurityStampStore<User>, IUserPhoneNumberStore<User>, IUserLoginStore<User>,

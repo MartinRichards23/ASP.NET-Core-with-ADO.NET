@@ -12,7 +12,6 @@ namespace WebsiteTemplate
 {
     /// <summary>
     /// Implementation of custom role store
-    /// In memory example https://github.com/aspnet/Identity/blob/85f8a49aef68bf9763cd9854ce1dd4a26a7c5d3c/test/InMemory.Test/InMemoryStore.cs
     /// </summary>
     public class MyRoleStore : IRoleStore<Role>, IRoleClaimStore<Role>
     {
