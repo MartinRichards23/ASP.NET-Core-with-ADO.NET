@@ -1,0 +1,104 @@
+﻿@model AccountSettingsModel
+@{
+    ViewData["Title"] = "Account settings";
+    ViewData.AddActivePage(ManageNavPages.Settings);
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="large-panel-title">General</h3>
+            </div>
+
+            <div class="panel-body">
+                @await Html.PartialAsync("EditorTemplates/UserConfigPartial", Model.User.Config)
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="large-panel-title">Developer</h3>
+            </div>
+
+            <div class="panel-body">
+                <div class="text-muted">This is your private key for accessing our APIs, keep it secure.</div>
+                <div><label>API key: </label> @Model.User.ApiKey</div>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="large-panel-title">Login history</h3>
+            </div>
+
+            <ul class="list-group">
+                @foreach (LoginAttempt login in Model.Logins)
+                {
+                    <li class="list-group-item">
+                        <span>
+                            <label class="existing-label">Time:</label>
+                            <span>@DateTimeExtensions.ToStringFriendly(login.Timestamp, ViewBag.TimeZone)</span>
+                        </span>
+                        <span>
+                            <label class="existing-label">IP address:</label>
+                            <span>@login.IpAddress</span>
+                        </span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="large-panel-title">Remove account</h3>
+            </div>
+
+            <div class="panel-body">
+                <div>Closing your account is permanent and cannot be undone, though you can re-register.</div>
+                
+                <div class="top-margin">
+                    <form id="closeAccountForm" style="display:none;" method="post" asp-controller="Manage" asp-action="CloseAccount"></form>
+                    <a class="btn btn-standard btn-sm" href="#" onclick="AskCloseAccount()">Close account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function AskCloseAccount() {
+            BootstrapDialog.show({
+                title: 'Confirm',
+                message: 'Are you sure you want to close your account?',
+                type: BootstrapDialog.TYPE_WARNING,
+                buttons: [{
+                    label: 'Close account',
+                    autospin: true,
+                    action: function (dialog) {
+                        document.getElementById('closeAccountForm').submit();
+                        dialog.close();
+                    }
+                }, {
+                    label: 'Cancel',
+                    action: function (dialog) {
+                        dialog.close();
+                    }
+                }]
+            });
+        }
+    </script>
+}

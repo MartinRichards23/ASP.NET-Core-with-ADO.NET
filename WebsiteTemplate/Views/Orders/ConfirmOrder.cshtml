@@ -1,0 +1,59 @@
+﻿@model ConfirmOrderModel
+
+@{
+    ViewData["Title"] = "Confirm order";
+}
+
+<script src="https://cdn.worldpay.com/v1/worldpay.js"></script>
+
+<ul class="breadcrumb">
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li><a asp-controller="Orders" asp-action="Index">Orders</a></li>
+    <li class="active">@ViewData["Title"]</li>
+</ul>
+
+<div class="page-title-container">
+    <h1 class="page-title">@ViewData["Title"]</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="large-panel-title">Order details</h3>
+            </div>
+
+            <div class="panel-body">
+
+                <img src="~/images/Logos/ssl.png" alt="SSL connection for security" asp-append-version="true" style="float:right;width:100px;" />
+
+                <div>
+                    <label class="existing-label">Order id:</label>
+                    <span>@Model.Order.Id</span>
+                </div>
+                <div>
+                    <label class="existing-label">Method:</label>
+                    <span>@Model.PaymentMethod.FriendlyName()</span>
+                </div>
+                <div>
+                    <label class="existing-label">Time:</label>
+                    <span>@DateTimeExtensions.ToStringFriendly(Model.Order.Timestamp, ViewBag.TimeZone)</span>
+                </div>
+                <div>
+                    <label class="existing-label">Credits:</label>
+                    @*<span>@Model.Order.Credits</span>*@
+                </div>
+                <div>
+                    <label class="existing-label">Value:</label>
+                    <span>@Model.Order.Currency @Model.Order.ValueInCurrency.ToString("0.00")</span>
+                </div>
+
+                <form asp-controller="Orders" asp-action="CompleteOrder" asp-route-orderId="@Model.Order.Id" method="post" class="form-horizontal">
+                    <button type="submit" class="btn btn-success top-margin" style="width:200px;">
+                        <span class="glyphicon glyphicon-plus-sign"></span> Confirm order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

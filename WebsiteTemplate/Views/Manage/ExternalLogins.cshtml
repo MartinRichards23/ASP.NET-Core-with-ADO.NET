@@ -1,0 +1,47 @@
+﻿@model ExternalLoginsViewModel
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Manage your external logins";
+    ViewData.AddActivePage(ManageNavPages.ExternalLogins);
+}
+
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+<p>Set up external logins so you can log in with one of you other accounts such as Facebook.</p>
+
+<table class="table">
+    <tbody>
+        @foreach (var loginProvider in await SignInManager.GetExternalAuthenticationSchemesAsync())
+        {
+            <tr>
+                <td>@loginProvider.DisplayName</td>
+                <td>
+                    @{
+                        var login = Model.CurrentLogins.FirstOrDefault(m => m.LoginProvider == loginProvider.Name);
+                    }
+
+                    @if (login != null)
+                    {
+                        @if (Model.ShowRemoveButton)
+                        {
+                            <form asp-action="RemoveLogin" method="post">
+                                <div>
+                                    <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
+                                    <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
+                                    <button type="submit" class="btn btn-standard btn-sm" title="Remove this @login.LoginProvider login from your account">Remove</button>
+                                </div>
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <form asp-action="LinkLogin" method="post" class="form-horizontal">
+                            <button type="submit" class="btn btn-standard btn-sm" name="provider" value="@loginProvider.Name" title="Log in using your @loginProvider.DisplayName account">Add</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

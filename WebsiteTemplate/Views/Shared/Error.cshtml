@@ -1,0 +1,17 @@
+﻿@model ErrorModel
+
+@{
+    ViewData["Title"] = "Error";
+}
+
+<ul class="breadcrumb">
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="active">@ViewData["Title"]</li>
+</ul>
+
+<div class="page-title-container">
+    <h1 class="page-title">@Model.Title</h1>
+    <p>Details have been logged, please try again and if the problem persists contact us.</p>
+</div>
+
+<p>@Model.Text</p>

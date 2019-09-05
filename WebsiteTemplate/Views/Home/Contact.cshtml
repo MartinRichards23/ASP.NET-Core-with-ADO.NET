@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+}
+
+<ul class="breadcrumb">
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="active">@ViewData["Title"]</li>
+</ul>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="large-panel-title">Feedback</h3>
+            </div>
+            <div class="panel-body">
+                <p>Have a question or a bug to report? The please get in touch…</p>
+                <p>Help us make our services better for you, let us know about any features you need.</p>
+
+                <address>
+                    <strong>Email:</strong> <a href="mailto:enquiries@WebsiteTemplate.com">enquiries@WebsiteTemplate.com</a><br />
+                </address>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <strong>Or message us:</strong>
+
+                    @model FeedbackModel
+
+            <form method="post" asp-controller="Home" asp-action="SendFeedback" class="form-horizontal">
+                <div class="input-group top-margin-sm">
+                    <label class="input-group-addon">Subject</label>
+                    <input asp-for="Subject" class="form-control input-width-md" placeholder="subject" />
+                </div>
+                <div class="top-margin-sm">
+                    <textarea asp-for="Message" style="width:50%; max-width:100%; min-width:100px; min-height:100px;" placeholder="Enter message">@Model.Message</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success top-margin-sm" style="width:150px;">Send</button>
+
+            </form>
+                }
+                else
+                {
+                    <p><a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">Sign in</a> to contact us directly.</p>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="large-panel-title">About us</h3>
+            </div>
+            <div class="panel-body">
+                <p>About description.</p>
+
+                <img src="~/images/logo.png" alt="About" asp-append-version="true" style="padding:5px;height:38px;background-color:#047DBE;" />
+            </div>
+        </div>
+    </div>
+</div>

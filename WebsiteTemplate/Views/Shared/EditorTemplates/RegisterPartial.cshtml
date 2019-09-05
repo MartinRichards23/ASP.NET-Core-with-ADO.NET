@@ -1,0 +1,74 @@
+﻿@model RegisterViewModel
+
+<form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewBag.ReturnUrl" method="post" class="form-horizontal" role="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input id="timeZoneOffset" type="hidden" hidden="hidden" asp-for="TimeZoneOffset" value="-100">
+
+    <div class="form-group-sm row bottom-margin-sm">
+
+        <label class="col-md-3 control-label">Email</label>
+        <div class="col-md-9">
+            <input asp-for="Email" class="form-control input-width-md" spellcheck="false" placeholder="Email address" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group-sm row bottom-margin-sm">
+        <label class="col-md-3 control-label">Password <button type="button" class="btn btn-info btn-xs" tabindex="-1" data-toggle="modal" data-target="#modalPasswords">?</button></label>
+        <div class="col-md-9">
+            <input asp-for="Password" class="form-control input-width-md" placeholder="Password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group-sm row bottom-margin-sm">
+        <label class="col-md-3 control-label">Confirm</label>
+        <div class="col-md-9">
+            <input asp-for="ConfirmPassword" class="form-control input-width-md" placeholder="Confirm password" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-offset-3 col-md-3">
+            <button type="submit" class="btn btn-standard">Register</button>
+        </div>
+        <div class="col-md-6">
+            <p class="text-muted text-sm">By registering you are agreeing to the <a asp-controller="Home" asp-action="TermsOfService" target="_blank">terms of service.</a></p>
+        </div>
+    </div>
+
+</form>
+
+<div class="modal fade" id="modalPasswords" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Password security</h4>
+            </div>
+            <div class="modal-body">
+                <p>Here are some simple tips for keeping your password safe and secure:</p>
+                <ul>
+                    <li>Use upper-case, numbers and punctuation in your passwords.</li>
+                    <li>Don't use a common or guessable word or date.</li>
+                    <li>Don't re-use the same password on different websites.</li>
+                    <li>We will never email you and ask for your password.</li>
+                    <li>Avoid entering passwords on computers you don’t control.</li>
+                    <li>Consider periodically changing your password.</li>
+                    <li>If you think there is any change your password has been compromised, change it immediately.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-standard" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("load", loaded);
+
+    function loaded() {
+        var hrs = -(new Date().getTimezoneOffset() / 60);
+        var element = document.getElementById("timeZoneOffset");
+        element.value = hrs;
+    }
+</script>

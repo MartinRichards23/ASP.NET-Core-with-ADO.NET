@@ -1,0 +1,17 @@
+﻿@model MessageModel
+
+@{
+    ViewData["Title"] = "Message";
+}
+
+<ul class="breadcrumb">
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="active">@ViewData["Title"]</li>
+</ul>
+
+<div class="page-title-container">
+    <h1>@Model.Title</h1>
+    <p>@Model.Text</p>
+</div>
+
+

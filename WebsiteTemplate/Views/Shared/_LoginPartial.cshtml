@@ -1,0 +1,23 @@
+﻿@using System.Security.Claims
+
+<div class="navbar-right">
+
+
+    <div class="btn-group">
+        <div class="navbar-collapse collapse">
+            @if (User.Identity.IsAuthenticated)
+            {
+                @if (ViewBag.User != null)
+                {
+                    User user = ViewBag.User;
+
+                    <a class="btn btn-standard navbar-btn" asp-area="" asp-controller="Manage" asp-action="Index">Account</a>
+                }
+            }
+            else
+            {
+                <a class="btn btn-standard navbar-btn" id="loginLink" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">Register / Sign in</a>
+            }
+        </div>
+    </div>
+</div>

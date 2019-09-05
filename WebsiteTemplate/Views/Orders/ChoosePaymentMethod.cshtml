@@ -1,0 +1,223 @@
+﻿@{
+    ViewData["Title"] = "Choose payment method";
+}
+
+<script src="https://cdn.worldpay.com/v1/worldpay.js"></script>
+
+<ul class="breadcrumb">
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li><a asp-controller="Orders" asp-action="Index">Orders</a></li>
+    <li class="active">@ViewData["Title"]</li>
+</ul>
+
+<div class="page-title-container">
+    <h1 class="page-title">@ViewData["Title"]</h1>
+    <p>Choose the card details you want to use for payment</p>
+</div>
+
+<style>
+    .existing-label {
+        width: 150px;
+    }
+</style>
+
+@if (ViewBag.PaymentMethods.Count > 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="large-panel-title">Use existing payment details</h3>
+                </div>
+
+                <ul class="list-group">
+                    @foreach (PaymentMethod method in ViewBag.PaymentMethods)
+                    {
+                        if (method.PaymentType == PaymentType.Card)
+                        {
+                            <li class="list-group-item">
+                                <div>
+                                    <label class="existing-label">Name:</label>
+                                    <span>@method.CardDetails.Name</span>
+                                </div>
+                                <div>
+                                    <label class="existing-label">Number:</label>
+                                    <span>@method.FriendlyName()</span>
+                                </div>
+                                <div>
+                                    <label class="existing-label">Type:</label>
+                                    <span>@method.CardDetails.CardType</span>
+                                </div>
+                                <div>
+                                    <label class="existing-label">Expires:</label>
+                                    <span>@method.CardDetails.ExpiryMonth / @method.CardDetails.ExpiryYear</span>
+                                </div>
+
+                                <div>
+                                    <form method="post" asp-controller="Orders" asp-action="ChoosePaymentMethod" asp-route-orderId="@ViewBag.OrderId" asp-route-paymentMethodId="@method.Id">
+                                        <button class="btn btn-standard btn-sm" type="submit"><span class="glyphicon glyphicon-arrow-right"></span> Continue</button>
+                                    </form>
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="large-panel-title">Add new payment details</h3>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="bottom-margin-sm">
+                    <img src="~/images/Logos/ssl.png" alt="SSL connection for security" asp-append-version="true" style="float:right;width:100px;" />
+                    <p class="text-muted">Fields marked * are mandatory.</p>
+                </div>
+
+                @model NewCardModel
+
+                <form id="paymentForm" method="post" asp-controller="Orders" asp-action="ChoosePaymentMethodNew" asp-route-orderId="@ViewBag.OrderId">
+                    <span id="paymentErrors" class="text-danger"></span>
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div id="my_card_section">
+                        <h3>Card details</h3>
+
+                        <div class="bottom-margin-sm">
+                            <img src="~/images/Logos/cards/VISA.gif" alt="Visa Credit and Debit payments supported by Worldpay" asp-append-version="true">
+                            <img src="~/images/Logos/cards/mastercard.gif" alt="Mastercard payments supported by Worldpay" asp-append-version="true">
+                            <img src="~/images/Logos/cards/AMEX.gif" alt="American Express payments supported by Worldpay" asp-append-version="true">
+                            @*<img src=http://www.worldpay.com/images/cardlogos/visa_electron.gif alt="Visa Electron payments supported by Worldpay">
+                                <img src=http://www.worldpay.com/images/cardlogos/maestro.gif alt="Maestro payments supported by Worldpay">
+                                <img src=http://www.worldpay.com/images/cardlogos/diners.gif alt="Diners payments supported by Worldpay">
+                                <img src=http://www.worldpay.com/images/cardlogos/JCB.gif alt="JCB payments supported by Worldpay">
+                                <img src=http://www.worldpay.com/images/cardlogos/laser.gif alt="Laser payments supported by Worldpay">
+                                <img src=http://www.worldpay.com/images/cardlogos/ELV.gif alt="ELV payments supported by Worldpay">*@
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-group-addon settings-label">Name on card *</label>
+                            <input type="text" class="form-control input-width-md" data-worldpay="name" name="name" />
+                        </div>
+                        <div class="input-group top-margin-sm">
+                            <label class="input-group-addon settings-label">Card number *</label>
+                            <input type="text" class="form-control input-width-md" data-worldpay="number" size="20" />
+                        </div>
+                        <div class="input-group input-group-sm top-margin-sm">
+                            <label class="input-group-addon">CVC *</label>
+                            <input type="text" class="form-control input-width-sm" data-worldpay="cvc" size="4" maxlength="4" />
+                            <button type="button" class="btn btn-info btn-xs left-margin-sm" data-toggle="modal" data-target="#modalCVC">?</button>
+                        </div>
+                        <div class="input-group input-group-sm top-margin-sm">
+                            <label class="input-group-addon">Expiry *</label>
+                            <input type="text" class="form-control input-width-xs" data-worldpay="exp-month" size="2" maxlength="2" placeholder="MM" />
+                            <input type="text" class="form-control input-width-xs" data-worldpay="exp-year" size="4" maxlength="4" placeholder="YYYY" />
+                        </div>
+                    </div>
+
+                    <div id="my_address_section" class="top-margin">
+                        <h3>Billing address</h3>
+                        <div class="input-group input-group-sm">
+                            <label class="input-group-addon settings-label">Address 1 *</label>
+                            <input type="text" class="form-control input-width-md" asp-for="Address1" />
+                        </div>
+
+                        <div class="input-group input-group-sm top-margin-sm">
+                            <label class="input-group-addon settings-label">Address 2</label>
+                            <input type="text" class="form-control input-width-md" asp-for="Address2" />
+                        </div>
+
+                        <div class="input-group input-group-sm top-margin-sm">
+                            <label class="input-group-addon settings-label">Address 3</label>
+                            <input type="text" class="form-control input-width-md" asp-for="Address3" />
+                        </div>
+
+                        <div class="input-group input-group-sm top-margin-sm">
+                            <label class="input-group-addon settings-label">City *</label>
+                            <input type="text" class="form-control input-width-md" asp-for="City" />
+                        </div>
+
+                        <div class="input-group input-group-sm top-margin-sm">
+                            <label class="input-group-addon settings-label">Country *</label>
+                            <select class="form-control input-width-md" asp-for="Country">
+                                <option value="" selected="selected">Choose country…</option>
+
+                                @foreach (CountryInfo country in CountryInfo.GetCountries())
+                                {
+                                    <option value="@country.Iso2">@country.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="input-group input-group-sm top-margin-sm">
+                            <label class="input-group-addon settings-label">Post code *</label>
+                            <input type="text" class="form-control input-width-sm" asp-for="PostCode" />
+                        </div>
+                    </div>
+
+                    <div class="top-margin-sm">
+                        <a href="http://www.worldpay.com" style="float:right;" target="_blank"><img src="~/images/Logos/worldpay.gif" asp-append-version="true" border="0" alt="Worldpay Payments Processing"></a>
+                        <button type="submit" class="btn btn-success">
+                            <span class="glyphicon glyphicon-arrow-right"></span> Save
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+<script type='text/javascript'>
+    window.addEventListener("load", loaded);
+
+    function loaded() {
+        Worldpay.reusable = true;
+
+        var form = document.getElementById('paymentForm');
+        Worldpay.useOwnForm({
+            'clientKey': 'WorldpayClientKey',
+            'form': form,
+            'reusable': true,
+            'callback': function (status, response) {
+                document.getElementById('paymentErrors').innerHTML = '';
+                if (response.error) {
+                    Worldpay.handleError(form, document.getElementById('paymentErrors'), response.error);
+                } else {
+                    var token = response.token;
+                    Worldpay.formBuilder(form, 'input', 'hidden', 'token', token);
+                    form.submit();
+                }
+            }
+        });
+    }
+</script>
+
+<div class="modal fade" id="modalCVC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">CVC</h4>
+            </div>
+            <div class="modal-body">
+                <p>The cvc number is the 3 digit number on the back of the card.</p>
+                <img src="~/images/Logos/cards/cvc.jpg" alt="CVC number" asp-append-version="true" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-standard" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

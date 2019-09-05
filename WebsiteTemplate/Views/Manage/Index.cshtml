@@ -1,0 +1,65 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData.AddActivePage(ManageNavPages.Index);
+}
+
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+<div class="row bottom-margin">
+    <div class="col-md-6">
+        <div>
+            <form id="logoutForm" asp-controller="Account" asp-action="LogOff" method="post" style="width:100px; display:inline">
+                <a class="btn btn-standard btn-sm" href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group row">
+                <label class="col-md-3 control-label">Username</label>
+                <div class="col-md-9">
+                    <input asp-for="Username" class="form-control input-width-md" spellcheck="false" placeholder="User name" disabled />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 control-label">Email</label>
+                <div class="col-md-9">
+                    @if (Model.IsEmailConfirmed)
+                    {
+                        <div class="input-group">
+                            <input asp-for="Email" class="form-control input-width-md" spellcheck="false" placeholder="Email" />
+                            <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <input asp-for="Email" class="form-control" />
+                        <button asp-action="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                    }
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 control-label">Phone no.</label>
+                <div class="col-md-9">
+                    <input asp-for="PhoneNumber" class="form-control input-width-md" spellcheck="false" placeholder="Phone number" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-sm ">
+                <span class="glyphicon glyphicon-save"></span> Save
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

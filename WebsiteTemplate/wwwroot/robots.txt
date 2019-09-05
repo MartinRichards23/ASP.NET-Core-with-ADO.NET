@@ -1,0 +1,8 @@
+﻿User-agent: AhrefsBot
+Crawl-Delay: 60
+
+User-agent: *
+Disallow: /Home/TermsOfService
+Disallow: /Home/PrivacyStatement
+Disallow: /Test
+Disallow: /Account/Login
