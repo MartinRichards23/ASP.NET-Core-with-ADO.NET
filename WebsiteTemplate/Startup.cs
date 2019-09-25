@@ -18,14 +18,10 @@ using SystemPlus.Web.Email;
 using SystemPlus.Web.Logging;
 using SystemPlus.Web.ReWriters;
 using WebsiteTemplate.Core;
-using WebsiteTemplate.Data;
 using WebsiteTemplate.Core.Emailing;
+using WebsiteTemplate.Data;
 using WebsiteTemplate.Models;
 using WebsiteTemplate.Services;
-using WebsiteTemplate.Data.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebsiteTemplate
 {
@@ -63,8 +59,6 @@ namespace WebsiteTemplate
             services.AddSingleton(typeof(IEmailSender), emailSender);
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
-            //// http://stackoverflow.com/questions/37849816/swapping-azure-web-app-deployment-slots-logs-out-all-users-in-asp-net-core-rc2
-            //// https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview
             //string applicationName = Configuration["DataProtection:ApplicationName"];
             //string blobName = Configuration["DataProtection:BlobName"];
             //if (applicationName != null && blobName != null)

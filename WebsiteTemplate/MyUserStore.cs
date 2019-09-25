@@ -14,7 +14,6 @@ namespace WebsiteTemplate
 {
     /// <summary>
     /// Implementation of custom user store
-    /// 
     /// </summary>
     public class MyUserStore : IUserStore<User>, IUserPasswordStore<User>, IUserEmailStore<User>, IUserSecurityStampStore<User>, IUserPhoneNumberStore<User>, IUserLoginStore<User>,
         IUserRoleStore<User>, IUserClaimStore<User>,
