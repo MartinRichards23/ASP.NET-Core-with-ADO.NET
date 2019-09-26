@@ -19,16 +19,14 @@ namespace WebsiteTemplate.Controllers
         #region Fields
 
         protected UserManager<User> UserManager { get; }
-        protected DataAccess DataAccess { get; }
         protected Database Database { get; }
 
         #endregion
 
-        public MyBaseController(UserManager<User> userManager, DataAccess dataAccess)
+        public MyBaseController(UserManager<User> userManager, Database database)
         {
             UserManager = userManager;
-            DataAccess = dataAccess;
-            Database = dataAccess.Database;
+            Database = database;
         }
 
         public async override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

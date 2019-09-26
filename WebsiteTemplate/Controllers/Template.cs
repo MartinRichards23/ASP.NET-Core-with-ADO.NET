@@ -10,8 +10,8 @@ namespace WebsiteTemplate.Controllers
     //[Area("")]
     public class Template : MyBaseController
     {
-        public Template(UserManager<User> userManager, DataAccess dataAccess)
-            : base(userManager, dataAccess)
+        public Template(UserManager<User> userManager, Database database)
+            : base(userManager, database)
         {
 
         }

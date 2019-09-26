@@ -40,61 +40,7 @@
             </div>
         </div>
     </div>
-
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="large-panel-title">Orders</h3>
-            </div>
-
-            <ul class="list-group">
-                @foreach (Order order in Model.RecentOrders)
-                {
-                    <li class="list-group-item">
-                        <table>
-                            <colgroup>
-                                <col span="1" style="width:200px;">
-                                <col span="1" style="width:200px;">
-                                <col span="1" style="width:auto;">
-                            </colgroup>
-
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="existing-label">User:</label>
-                                        <span>@order.UserId</span>
-                                    </td>
-                                    <td>
-                                        <label class="existing-label">Time:</label>
-                                        <span>@DateTimeExtensions.ToStringFriendly(order.Timestamp, ViewBag.TimeZone)</span>
-                                    </td>
-                                    <td>
-                                        <label class="existing-label">Order id:</label>
-                                        <span>@order.Id</span>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-
-                                    </td>
-                                    <td>
-                                        <label class="existing-label">Value:</label>
-                                        <span>@order.Currency @order.ValueInCurrency.ToString("0.00")</span>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </li>
-                }
-            </ul>
-
-
-        </div>
-    </div>
-
-
+    
     <div class="col-md-12">
         <div class="panel panel-default feature-panel">
             <div class="panel-heading">

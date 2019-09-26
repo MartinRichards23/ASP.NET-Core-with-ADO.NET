@@ -35,8 +35,8 @@ namespace WebsiteTemplate.Controllers
 
         #endregion
 
-        public Account(DataAccess dataAccess, UserManager<User> userManager, SignInManager<User> signInManager, Emailer emailer, ISmsSender smsSender, ILogger<Account> logger)
-            : base(userManager, dataAccess)
+        public Account(Database database, UserManager<User> userManager, SignInManager<User> signInManager, Emailer emailer, ISmsSender smsSender, ILogger<Account> logger)
+            : base(userManager, database)
         {
             _userManager = userManager;
             _signInManager = signInManager;

@@ -19,7 +19,6 @@ namespace WebsiteTemplate.Models
         bool apiEnabled;
 
         TimeZoneInfo timeZoneInfo;
-        readonly Currency currencyInfo;
 
         #region Properties
 
@@ -56,22 +55,6 @@ namespace WebsiteTemplate.Models
                 }
 
                 return timeZoneInfo;
-            }
-        }
-
-        public Currency CurrencyInfo
-        {
-            get
-            {
-                //if (currencyInfo == null)
-                //{
-                //    currencyInfo = PaymentTools.GetCurrency(Currency);
-
-                //    if (currencyInfo == null)
-                //        currencyInfo = PaymentTools.GetCurrency("GBP");
-                //}
-
-                return currencyInfo;
             }
         }
 

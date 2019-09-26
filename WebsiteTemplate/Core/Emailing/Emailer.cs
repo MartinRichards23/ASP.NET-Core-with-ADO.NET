@@ -6,7 +6,6 @@ using SystemPlus.ComponentModel.Logging;
 using SystemPlus.Text;
 using SystemPlus.Web.Email;
 using WebsiteTemplate.Models;
-using WebsiteTemplate.Core.Tools;
 
 namespace WebsiteTemplate.Core.Emailing
 {
@@ -87,29 +86,6 @@ namespace WebsiteTemplate.Core.Emailing
         {
             string subject = "Password changed";
             string content = changedPasswordTemplate;
-
-            Guid emailId = Guid.NewGuid();
-            string header = emailHeader;
-            EmailTools.FormatHeader(ref header, emailId, subject, user);
-            EmailTools.DoReplace(ref header, "[[Title]]", subject);
-            string footer = emailFooter;
-
-            string body = header + content + footer;
-
-            await EmailSender.SendEmailAsync(user.Email, GlobalSettings.AdminEmail, fromName, subject, body, true).ContinueWithLogErrors();
-        }
-
-        public async Task SendPurchaseMadeAsync(User user, Order order, PaymentMethod method)
-        {
-            string subject = "Credits purchased";
-            string content = purchaseTemplate;
-
-            string value = string.Format("{0} {1:0.00}", order.Currency, order.ValueInCurrency);
-
-            EmailTools.DoReplace(ref content, "[[OrderId]]", order.Id);
-            EmailTools.DoReplace(ref content, "[[PaymentMethod]]", method.FriendlyName());
-            EmailTools.DoReplace(ref content, "[[Value]]", value);
-            EmailTools.DoReplace(ref content, "[[Time]]", order.Timestamp.ToStringFriendly(user.Config.TimeZoneInfo, true, false));
 
             Guid emailId = Guid.NewGuid();
             string header = emailHeader;

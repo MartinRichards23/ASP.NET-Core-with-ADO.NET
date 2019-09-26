@@ -44,29 +44,16 @@ namespace WebsiteTemplate
         {
             EmailTools.Replacements.AddRange(UrlMaker.GetTagReplacements());
 
-            database = new CachedDatabase(Configuration["ConnectionStrings:DefaultConnection"]);
-            //BlobStorage blobAccess = new BlobStorage(Configuration["ConnectionStrings:StorageAccountName"], Configuration["ConnectionStrings:StorageAccountKey"]);
-            DataAccess dataAccess = new DataAccess(database);
+            database = new Database(Configuration["ConnectionStrings:DefaultConnection"]);
 
             IEmailSender emailSender = new Office365Emailer(Configuration["Email:Address"], Configuration["Email:Password"], "Admin");
             Emailer emailer = new Emailer(emailSender, "");
             
             // add objects to initialise constructors with
             services.AddSingleton(typeof(Database), database);
-            //services.AddSingleton(typeof(BlobStorage), blobAccess);
-            services.AddSingleton(typeof(DataAccess), dataAccess);
             services.AddSingleton(typeof(Emailer), emailer);
             services.AddSingleton(typeof(IEmailSender), emailSender);
             services.AddTransient<ISmsSender, AuthMessageSender>();
-
-            //string applicationName = Configuration["DataProtection:ApplicationName"];
-            //string blobName = Configuration["DataProtection:BlobName"];
-            //if (applicationName != null && blobName != null)
-            //{
-            //    CloudBlobContainer container = blobAccess.GetBlobContainer("website");
-            //    container.CreateIfNotExists();
-            //    services.AddDataProtection().SetApplicationName(applicationName).PersistKeysToAzureBlobStorage(container, blobName);
-            //}
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -96,16 +83,6 @@ namespace WebsiteTemplate
             .AddRoleStore<MyRoleStore>()
             .AddDefaultTokenProviders();
 
-            //services.ConfigureApplicationCookie(o =>
-            //{
-            //    o.Cookie.Name = "LoginSession";
-            //    o.Cookie.Expiration = TimeSpan.FromDays(60);
-            //    o.ExpireTimeSpan = TimeSpan.FromDays(60);
-            //    o.SlidingExpiration = true;
-            //    o.LoginPath = new PathString("/Account/Login");
-            //    o.LogoutPath = new PathString("/Account/LogOff");
-            //});
-
             services.AddAuthentication()
             .AddGoogle(googleOptions =>
             {
@@ -134,7 +111,6 @@ namespace WebsiteTemplate
             services.AddLogging(builder =>
             {
                 builder.AddConfiguration(Configuration.GetSection("Logging"))
-                    .AddProvider(new EmailLoggerProvider(emailSender, "martinrichards23@gmail.com"))
                     .AddConsole()
                     .AddDebug();
             });
@@ -143,19 +119,7 @@ namespace WebsiteTemplate
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             app.UseStatusCodePagesWithReExecute("/Home/Status/{0}");
-
-            //#if DEBUG
-            app.Use(async (httpContext, next) =>
-            {
-                await next();
-                if (httpContext.Response.StatusCode >= 400)
-                {
-                    ProcessHttpError(httpContext);
-                    await next();
-                }
-            });
-            //#endif
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -210,79 +174,6 @@ namespace WebsiteTemplate
 
                 endpoints.MapRazorPages();
             });
-
-            //CreateRoles(serviceProvider).Wait();
-            //CreateClaims(serviceProvider).Wait();
-        }
-
-        private void ProcessHttpError(HttpContext httpContext)
-        {
-            try
-            {
-                int status = httpContext.Response.StatusCode;
-                string url = httpContext.Request.GetDisplayUrl();
-                string userAgent = httpContext.Request.UserAgent();
-                string referer = httpContext.Request.Referer();
-                string ipAddress = httpContext.GetIpAddress();
-
-                if (url.Contains("/Home/Status"))
-                    return;
-
-                if (url.EndsWith(".php", StringComparison.InvariantCultureIgnoreCase))
-                    return;
-
-                if (BotDetector.IsBot(userAgent))
-                    return;
-
-                //StringBuilder sb = new StringBuilder();
-                //foreach (var header in httpContext.Request.Headers)
-                //{
-                //    string key = header.Key;
-                //    string val = string.Join(" | ", header.Value);
-
-                //    sb.AppendFormat("{0} : {1}, ", key, val);
-                //}
-
-                //logger.LogWarning($"Http error: {status}, {url}, {userAgent}, {referer}, {ipAddress}");
-            }
-            catch (Exception)
-            {
-                //logger.LogError(ex, "ProcessHttpError");
-            }
-        }
-        
-        private async Task CreateRoles(IServiceProvider serviceProvider)
-        {
-            UserManager<User> userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            RoleManager<Role> roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
-            User user = await userManager.FindByEmailAsync("martinrichards23@gmail.com");
-
-            string[] roleNames = { "Administrator", "Manager", "Member" };
-            IdentityResult roleResult;
-
-            foreach (string roleName in roleNames)
-            {
-                bool roleExist = await roleManager.RoleExistsAsync(roleName);
-                if (!roleExist)
-                {
-                    //create the roles and seed them to the database: Question 1
-                    roleResult = await roleManager.CreateAsync(new Role() { Name = roleName });
-                }
-            }
-
-            IdentityResult result = await userManager.AddToRoleAsync(user, "Administrator");
-            //var result = await userManager.RemoveFromRoleAsync(user, "Administrator");
-        }
-
-        private async Task CreateClaims(IServiceProvider serviceProvider)
-        {
-            UserManager<User> userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            RoleManager<Role> roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
-            User user = await userManager.FindByEmailAsync("martinrichards23@gmail.com");
-
-            await userManager.AddClaimAsync(user, new Claim("IsAdmin", "true"));
-
-            //await userManager.RemoveClaimAsync(user, new Claim("IsAdmin", "true"));
         }
     }
 }

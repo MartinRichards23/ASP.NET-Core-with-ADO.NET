@@ -22,8 +22,8 @@ namespace WebsiteTemplate.Controllers
         readonly IEmailSender emailer;
         readonly ILogger logger;
 
-        public Home(UserManager<User> userManager, DataAccess dataAccess, IEmailSender emailer, ILogger<Home> logger)
-            : base(userManager, dataAccess)
+        public Home(UserManager<User> userManager, Database database, IEmailSender emailer, ILogger<Home> logger)
+            : base(userManager, database)
         {
             this.emailer = emailer;
             this.logger = logger;

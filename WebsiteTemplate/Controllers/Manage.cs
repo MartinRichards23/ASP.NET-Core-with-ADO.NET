@@ -33,8 +33,8 @@ namespace WebsiteTemplate.Controllers
         private const string qrCodeName = "WebsiteTemplate";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
 
-        public Manage(DataAccess dataAccess, UserManager<User> userManager, SignInManager<User> signInManager, IEmailSender emailer, ISmsSender smsSender, UrlEncoder urlEncoder)
-            : base(userManager, dataAccess)
+        public Manage(Database database, UserManager<User> userManager, SignInManager<User> signInManager, IEmailSender emailer, ISmsSender smsSender, UrlEncoder urlEncoder)
+            : base(userManager, database)
         {
             _userManager = userManager;
             _signInManager = signInManager;
