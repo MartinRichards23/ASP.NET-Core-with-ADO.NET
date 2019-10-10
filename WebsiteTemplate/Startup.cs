@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -10,12 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using SystemPlus.Collections.Generic;
-using SystemPlus.Web;
 using SystemPlus.Web.Email;
-using SystemPlus.Web.Logging;
 using SystemPlus.Web.ReWriters;
 using WebsiteTemplate.Core;
 using WebsiteTemplate.Core.Emailing;
@@ -48,7 +43,7 @@ namespace WebsiteTemplate
 
             IEmailSender emailSender = new Office365Emailer(Configuration["Email:Address"], Configuration["Email:Password"], "Admin");
             Emailer emailer = new Emailer(emailSender, "");
-            
+
             // add objects to initialise constructors with
             services.AddSingleton(typeof(Database), database);
             services.AddSingleton(typeof(Emailer), emailer);
@@ -63,7 +58,7 @@ namespace WebsiteTemplate
 
             // Require https sitewide
             services.Configure<MvcOptions>(options => { options.Filters.Add(new RequireHttpsAttribute()); });
-            
+
             services.AddIdentity<User, Role>(o =>
             {
                 o.User.RequireUniqueEmail = true;
@@ -119,7 +114,7 @@ namespace WebsiteTemplate
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             app.UseStatusCodePagesWithReExecute("/Home/Status/{0}");
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

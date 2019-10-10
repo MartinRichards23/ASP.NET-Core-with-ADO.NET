@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WebsiteTemplate.Core
+﻿namespace WebsiteTemplate.Core
 {
     public static class GlobalSettings
     {

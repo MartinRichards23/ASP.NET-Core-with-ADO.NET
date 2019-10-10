@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using SystemPlus.Web.Email;
 using WebsiteTemplate.Models;
 
 namespace WebsiteTemplate.Core.Emailing

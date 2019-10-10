@@ -7,16 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Threading;
 using System.Threading.Tasks;
 using SystemPlus.Web.Email;
-using WebsiteTemplate.Core;
 using WebsiteTemplate.Data;
-using WebsiteTemplate.Core.Emailing;
-using WebsiteTemplate.Models;
 using WebsiteTemplate.Extensions;
+using WebsiteTemplate.Models;
 using WebsiteTemplate.Services;
 using WebsiteTemplate.ViewModels;
-using System.Threading;
 
 namespace WebsiteTemplate.Controllers
 {

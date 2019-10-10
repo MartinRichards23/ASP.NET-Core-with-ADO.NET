@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using WebsiteTemplate.Core;
 using WebsiteTemplate.Data;
 using WebsiteTemplate.Models;
 using WebsiteTemplate.ViewModels;
 using WebsiteTemplate.ViewModels.Home;
-using System.Threading;
 
 namespace WebsiteTemplate.Controllers
 {
