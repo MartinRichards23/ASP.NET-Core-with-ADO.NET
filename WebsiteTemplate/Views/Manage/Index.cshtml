@@ -4,7 +4,7 @@
     ViewData.AddActivePage(ManageNavPages.Index);
 }
 
-@Html.Partial("_StatusMessage", Model.StatusMessage)
+@Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 
 <div class="row bottom-margin">
     <div class="col-md-6">

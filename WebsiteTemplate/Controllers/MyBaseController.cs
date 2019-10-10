@@ -63,11 +63,6 @@ namespace WebsiteTemplate.Controllers
 
         protected int GetUserId()
         {
-#if DEBUG
-            // get data for a different user for testing purposes
-            // return 100401;
-#endif
-
             string idString = UserManager.GetUserId(User);
 
             if (!int.TryParse(idString, out int userId))

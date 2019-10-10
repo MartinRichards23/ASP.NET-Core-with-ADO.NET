@@ -17,17 +17,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
+    <PackageReference Include="SystemPlus.Data" Version="1.0.0" />
+    <PackageReference Include="SystemPlus.Web" Version="1.0.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.2.301" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\SystemPlus\SystemPlus.Data\SystemPlus.Data.csproj" />
-    <ProjectReference Include="..\..\SystemPlus\SystemPlus.Web\SystemPlus.Web.csproj" />
-    <ProjectReference Include="..\..\SystemPlus\SystemPlus\SystemPlus.csproj" />
   </ItemGroup>
 
   <ItemGroup>

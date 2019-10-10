@@ -5,7 +5,7 @@
     ViewData.AddActivePage(ManageNavPages.ExternalLogins);
 }
 
-@Html.Partial("_StatusMessage", Model.StatusMessage)
+@Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 
 <p>Set up external logins so you can log in with one of you other accounts such as Facebook.</p>
 
