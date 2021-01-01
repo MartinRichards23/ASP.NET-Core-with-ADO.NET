@@ -47,113 +47,97 @@ namespace WebsiteTemplate.Data
             if (user.Config == null)
                 user.Config = UserConfig.DefaultConfig;
 
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("AddUser"))
-            {
-                cmd.Parameters.AddWithValue("@email", user.Email);
-                cmd.Parameters.AddWithValue("@normalizedEmail", user.NormalizedEmail);
-                cmd.Parameters.AddWithValue("@passwordHash", user.PasswordHash, null);
-                cmd.Parameters.AddWithValue("@securityStamp", user.SecurityStamp, null);
-                cmd.Parameters.AddWithValue("@twoFactorEnabled", user.TwoFactorEnabled);
-                cmd.Parameters.AddWithValue("@userName", user.UserName, null);
-                cmd.Parameters.AddWithValue("@normalizedUserName", user.NormalizedUserName, null);
-                cmd.Parameters.AddWithValue("@phoneNumber", user.PhoneNumber, null);
-                cmd.Parameters.AddWithValue("@phoneNumberConfirmed", user.PhoneNumberConfirmed);
-                cmd.Parameters.AddWithValue("@lockoutEnabled", user.LockoutEnabled);
-                cmd.Parameters.AddWithValue("@apiKey", apiKey);
-                cmd.Parameters.AddJsonValue("@options", user.Config);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("AddUser");
+            cmd.Parameters.AddWithValue("@email", user.Email);
+            cmd.Parameters.AddWithValue("@normalizedEmail", user.NormalizedEmail);
+            cmd.Parameters.AddWithValue("@passwordHash", user.PasswordHash, null);
+            cmd.Parameters.AddWithValue("@securityStamp", user.SecurityStamp, null);
+            cmd.Parameters.AddWithValue("@twoFactorEnabled", user.TwoFactorEnabled);
+            cmd.Parameters.AddWithValue("@userName", user.UserName, null);
+            cmd.Parameters.AddWithValue("@normalizedUserName", user.NormalizedUserName, null);
+            cmd.Parameters.AddWithValue("@phoneNumber", user.PhoneNumber, null);
+            cmd.Parameters.AddWithValue("@phoneNumberConfirmed", user.PhoneNumberConfirmed);
+            cmd.Parameters.AddWithValue("@lockoutEnabled", user.LockoutEnabled);
+            cmd.Parameters.AddWithValue("@apiKey", apiKey);
+            cmd.Parameters.AddJsonValue("@options", user.Config);
 
-                object o = await cmd.ExecuteScalarAsync(token);
-                user.Id = Convert.ToInt32(o);
-            }
+            object o = await cmd.ExecuteScalarAsync(token);
+            user.Id = Convert.ToInt32(o);
         }
 
         public async virtual Task UpdateUserAsync(User user, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("UpdateUser"))
-            {
-                cmd.Parameters.AddWithValue("@userId", user.Id);
-                cmd.Parameters.AddWithValue("@email", user.Email);
-                cmd.Parameters.AddWithValue("@normalizedEmail", user.NormalizedEmail);
-                cmd.Parameters.AddWithValue("@emailConfirmed", user.EmailConfirmed);
-                cmd.Parameters.AddWithValue("@passwordHash", user.PasswordHash, null);
-                cmd.Parameters.AddWithValue("@securityStamp", user.SecurityStamp, null);
-                cmd.Parameters.AddWithValue("@twoFactorEnabled", user.TwoFactorEnabled);
-                cmd.Parameters.AddWithValue("@userName", user.UserName, null);
-                cmd.Parameters.AddWithValue("@normalizedUserName", user.NormalizedUserName, null);
-                cmd.Parameters.AddWithValue("@phoneNumber", user.PhoneNumber, null);
-                cmd.Parameters.AddWithValue("@phoneNumberConfirmed", user.PhoneNumberConfirmed);
-                cmd.Parameters.AddWithValue("@lockoutEnd", user.LockoutEnd, null);
-                cmd.Parameters.AddWithValue("@lockoutEnabled", user.LockoutEnabled);
-                cmd.Parameters.AddWithValue("@accessFailedCount", user.AccessFailedCount);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("UpdateUser");
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            cmd.Parameters.AddWithValue("@email", user.Email);
+            cmd.Parameters.AddWithValue("@normalizedEmail", user.NormalizedEmail);
+            cmd.Parameters.AddWithValue("@emailConfirmed", user.EmailConfirmed);
+            cmd.Parameters.AddWithValue("@passwordHash", user.PasswordHash, null);
+            cmd.Parameters.AddWithValue("@securityStamp", user.SecurityStamp, null);
+            cmd.Parameters.AddWithValue("@twoFactorEnabled", user.TwoFactorEnabled);
+            cmd.Parameters.AddWithValue("@userName", user.UserName, null);
+            cmd.Parameters.AddWithValue("@normalizedUserName", user.NormalizedUserName, null);
+            cmd.Parameters.AddWithValue("@phoneNumber", user.PhoneNumber, null);
+            cmd.Parameters.AddWithValue("@phoneNumberConfirmed", user.PhoneNumberConfirmed);
+            cmd.Parameters.AddWithValue("@lockoutEnd", user.LockoutEnd, null);
+            cmd.Parameters.AddWithValue("@lockoutEnabled", user.LockoutEnabled);
+            cmd.Parameters.AddWithValue("@accessFailedCount", user.AccessFailedCount);
 
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async virtual Task UpdateUserConfigAsync(User user, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("UpdateUserOptions"))
-            {
-                cmd.Parameters.AddWithValue("@userId", user.Id);
-                cmd.Parameters.AddJsonValue("@options", user.Config);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("UpdateUserOptions");
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            cmd.Parameters.AddJsonValue("@options", user.Config);
 
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async virtual Task<User> GetUserAsync(int userId, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUser"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userId);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUser");
+            cmd.Parameters.AddWithValue("@userId", userId);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.TryReadItem(ReadUser);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.TryReadItem(ReadUser);
         }
 
         public async Task<User> GetUserByEmailAsync(string normalizedEmail, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUserByEmail"))
-            {
-                cmd.Parameters.AddWithValue("@normalizedEmail", normalizedEmail);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUserByEmail");
+            cmd.Parameters.AddWithValue("@normalizedEmail", normalizedEmail);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.TryReadItem(ReadUser);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.TryReadItem(ReadUser);
         }
 
         public async Task<User> GetUserByUserNameAsync(string normalizedUserName, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUserByUserName"))
-            {
-                cmd.Parameters.AddWithValue("@normalizedUserName", normalizedUserName);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUserByUserName");
+            cmd.Parameters.AddWithValue("@normalizedUserName", normalizedUserName);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.TryReadItem(ReadUser);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.TryReadItem(ReadUser);
         }
 
         public async virtual Task DeleteUserAsync(int userId, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("DeleteUser"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userId);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("DeleteUser");
+            cmd.Parameters.AddWithValue("@userId", userId);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         private User ReadUser(IDataReader rdr)
@@ -212,29 +196,25 @@ namespace WebsiteTemplate.Data
 
         public async Task AddLoginAttmptAsync(LoginAttempt login, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("AddLoginAttempt"))
-            {
-                cmd.Parameters.AddWithValue("@userId", login.UserId);
-                cmd.Parameters.AddWithValue("@ipAddress", login.IpAddress ?? string.Empty);
-                cmd.Parameters.AddWithValue("@userAgent", login.UserAgent, null);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("AddLoginAttempt");
+            cmd.Parameters.AddWithValue("@userId", login.UserId);
+            cmd.Parameters.AddWithValue("@ipAddress", login.IpAddress ?? string.Empty);
+            cmd.Parameters.AddWithValue("@userAgent", login.UserAgent, null);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<IList<LoginAttempt>> GetLoginAttemptsAsync(int userId, int count, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetLoginAttempts"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userId);
-                cmd.Parameters.AddWithValue("@count", count);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetLoginAttempts");
+            cmd.Parameters.AddWithValue("@userId", userId);
+            cmd.Parameters.AddWithValue("@count", count);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.ReadAll(ReadLoginAttempt);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.ReadAll(ReadLoginAttempt);
         }
 
         private LoginAttempt ReadLoginAttempt(IDataReader rdr)
@@ -261,47 +241,40 @@ namespace WebsiteTemplate.Data
 
         public async Task SetUserTokenAsync(User user, string loginProvider, string name, string value, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("SetUserToken"))
-            {
-                cmd.Parameters.AddWithValue("@userId", user.Id);
-                cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
-                cmd.Parameters.AddWithValue("@name", name);
-                cmd.Parameters.AddWithValue("@value", value);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("SetUserToken");
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@value", value);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<string> GetUserTokenAsync(User user, string loginProvider, string name, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUserToken"))
-            {
-                cmd.Parameters.AddWithValue("@userId", user.Id);
-                cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
-                cmd.Parameters.AddWithValue("@name", name);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUserToken");
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
+            cmd.Parameters.AddWithValue("@name", name);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    if (!await rdr.ReadAsync(token))
-                        return null;
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+            if (!await rdr.ReadAsync(token))
+                return null;
 
-                    return rdr.GetValue<string>("Value");
-                }
-            }
+            return rdr.GetValue<string>("Value");
         }
 
         public async Task DeleteUserTokenAsync(int userId, string loginProvider, string name, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("DeleteUserToken"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userId);
-                cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
-                cmd.Parameters.AddWithValue("@name", name);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("DeleteUserToken");
+            cmd.Parameters.AddWithValue("@userId", userId);
+            cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
+            cmd.Parameters.AddWithValue("@name", name);
 
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public UserToken ReadUserToken(IDataReader rdr)
@@ -322,57 +295,48 @@ namespace WebsiteTemplate.Data
 
         public async Task AddUserLoginAsync(UserLogin userLogin, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("AddUserLogin"))
-            {
-                cmd.Parameters.AddWithValue("@loginProvider", userLogin.LoginProvider);
-                cmd.Parameters.AddWithValue("@providerKey", userLogin.ProviderKey);
-                cmd.Parameters.AddWithValue("@userId", userLogin.UserId);
-                cmd.Parameters.AddWithValue("@providerDisplayName", userLogin.ProviderDisplayName, null);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("AddUserLogin");
+            cmd.Parameters.AddWithValue("@loginProvider", userLogin.LoginProvider);
+            cmd.Parameters.AddWithValue("@providerKey", userLogin.ProviderKey);
+            cmd.Parameters.AddWithValue("@userId", userLogin.UserId);
+            cmd.Parameters.AddWithValue("@providerDisplayName", userLogin.ProviderDisplayName, null);
 
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<UserLogin> GetUserLoginAsync(string loginProvider, string providerKey, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUserLogin"))
-            {
-                cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
-                cmd.Parameters.AddWithValue("@providerKey", providerKey);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUserLogin");
+            cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
+            cmd.Parameters.AddWithValue("@providerKey", providerKey);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.TryReadItem(ReadUserLogin);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.TryReadItem(ReadUserLogin);
         }
 
         public async Task<IList<UserLogin>> GetUserLoginsAsync(int userId, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUserLogins"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userId);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUserLogins");
+            cmd.Parameters.AddWithValue("@userId", userId);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.ReadAll(ReadUserLogin);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.ReadAll(ReadUserLogin);
         }
 
         public async Task DeleteUserLoginAsync(int userId, string loginProvider, string providerKey, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("DeleteUserLogin"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userId);
-                cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
-                cmd.Parameters.AddWithValue("@providerKey", providerKey);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("DeleteUserLogin");
+            cmd.Parameters.AddWithValue("@userId", userId);
+            cmd.Parameters.AddWithValue("@loginProvider", loginProvider);
+            cmd.Parameters.AddWithValue("@providerKey", providerKey);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         private UserLogin ReadUserLogin(IDataReader rdr)
@@ -394,133 +358,108 @@ namespace WebsiteTemplate.Data
 
         public async Task AddRoleAsync(Role role, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("AddRole"))
-            {
-                cmd.Parameters.AddWithValue("@name", role.Name);
-                cmd.Parameters.AddWithValue("@nameNormalized", role.NormalizedName);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("AddRole");
+            cmd.Parameters.AddWithValue("@name", role.Name);
+            cmd.Parameters.AddWithValue("@nameNormalized", role.NormalizedName);
 
-                object o = await cmd.ExecuteScalarAsync(token);
-                role.Id = Convert.ToInt32(o);
-            }
+            object o = await cmd.ExecuteScalarAsync(token);
+            role.Id = Convert.ToInt32(o);
         }
 
         public async Task UpdateRoleAsync(Role role, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("UpdateRole"))
-            {
-                cmd.Parameters.AddWithValue("@roleId", role.Id);
-                cmd.Parameters.AddWithValue("@name", role.Name);
-                cmd.Parameters.AddWithValue("@nameNormalized", role.NormalizedName);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("UpdateRole");
+            cmd.Parameters.AddWithValue("@roleId", role.Id);
+            cmd.Parameters.AddWithValue("@name", role.Name);
+            cmd.Parameters.AddWithValue("@nameNormalized", role.NormalizedName);
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<Role> GetRoleAsync(int id, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetRole"))
-            {
-                cmd.Parameters.AddWithValue("@id", id);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetRole");
+            cmd.Parameters.AddWithValue("@id", id);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.TryReadItem(ReadRole);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+            return rdr.TryReadItem(ReadRole);
         }
 
         public async Task<Role> GetRoleByNameAsync(string normalizedName, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetRoleByName"))
-            {
-                cmd.Parameters.AddWithValue("@normalizedName", normalizedName);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetRoleByName");
+            cmd.Parameters.AddWithValue("@normalizedName", normalizedName);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.TryReadItem(ReadRole);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+            return rdr.TryReadItem(ReadRole);
         }
 
         public async Task AddToRoleAsync(User user, string roleName, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("AddToRole"))
-            {
-                cmd.Parameters.AddWithValue("@userId", user.Id);
-                cmd.Parameters.AddWithValue("@roleName", roleName);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("AddToRole");
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            cmd.Parameters.AddWithValue("@roleName", roleName);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task RemoveFromRoleAsync(User user, string roleName, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("RemoveFromRole"))
-            {
-                cmd.Parameters.AddWithValue("@userId", user.Id);
-                cmd.Parameters.AddWithValue("@roleName", roleName);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("RemoveFromRole");
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            cmd.Parameters.AddWithValue("@roleName", roleName);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task DeleteRoleAsync(int id, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("DeleteRole"))
-            {
-                cmd.Parameters.AddWithValue("@id", id);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("DeleteRole");
+            cmd.Parameters.AddWithValue("@id", id);
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<IList<Role>> GetRolesAsync(User user, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetRoles"))
-            {
-                cmd.Parameters.AddWithValue("@userId", user.Id);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetRoles");
+            cmd.Parameters.AddWithValue("@userId", user.Id);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.ReadAll(ReadRole);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.ReadAll(ReadRole);
         }
 
         public async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("IsInRole"))
-            {
-                cmd.Parameters.AddWithValue("@userId", user.Id);
-                cmd.Parameters.AddWithValue("@roleName", roleName);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("IsInRole");
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            cmd.Parameters.AddWithValue("@roleName", roleName);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    if (!await rdr.ReadAsync(token))
-                        return false;
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
 
-                    return rdr.GetValue<int>("result") == 1;
-                }
-            }
+            if (!await rdr.ReadAsync(token))
+                return false;
+
+            return rdr.GetValue<int>("result") == 1;
         }
 
         public async Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUsersInRole"))
-            {
-                cmd.Parameters.AddWithValue("@roleName", roleName);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUsersInRole");
+            cmd.Parameters.AddWithValue("@roleName", roleName);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.ReadAll(ReadUser);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.ReadAll(ReadUser);
         }
 
         private Role ReadRole(IDataReader rdr)
@@ -545,41 +484,35 @@ namespace WebsiteTemplate.Data
 
         public async Task AddRoleClaimAsync(RoleClaim roleClaim, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("AddRoleClaim"))
-            {
-                cmd.Parameters.AddWithValue("@roleId", roleClaim.RoleId);
-                cmd.Parameters.AddWithValue("@claimType", roleClaim.ClaimType, null);
-                cmd.Parameters.AddWithValue("@claimValue", roleClaim.ClaimValue, null);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("AddRoleClaim");
+            cmd.Parameters.AddWithValue("@roleId", roleClaim.RoleId);
+            cmd.Parameters.AddWithValue("@claimType", roleClaim.ClaimType, null);
+            cmd.Parameters.AddWithValue("@claimValue", roleClaim.ClaimValue, null);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<IList<RoleClaim>> GetRoleClaimsAsync(int roleId, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetRoleClaims"))
-            {
-                cmd.Parameters.AddWithValue("@roleId", roleId);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetRoleClaims");
+            cmd.Parameters.AddWithValue("@roleId", roleId);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.ReadAll(ReadRoleClaim);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.ReadAll(ReadRoleClaim);
         }
 
         public async Task DeleteRoleClaimAsync(int roleId, string type, string value, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("DeleteRoleClaim"))
-            {
-                cmd.Parameters.AddWithValue("@roleId", roleId);
-                cmd.Parameters.AddWithValue("@type", type);
-                cmd.Parameters.AddWithValue("@value", value);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("DeleteRoleClaim");
+            cmd.Parameters.AddWithValue("@roleId", roleId);
+            cmd.Parameters.AddWithValue("@type", type);
+            cmd.Parameters.AddWithValue("@value", value);
 
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         private RoleClaim ReadRoleClaim(IDataReader rdr)
@@ -600,69 +533,61 @@ namespace WebsiteTemplate.Data
 
         public async Task AddUserClaimAsync(UserClaim userClaim, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("AddUserClaim"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userClaim.UserId);
-                cmd.Parameters.AddWithValue("@claimType", userClaim.ClaimType, null);
-                cmd.Parameters.AddWithValue("@claimValue", userClaim.ClaimValue, null);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("AddUserClaim");
+            cmd.Parameters.AddWithValue("@userId", userClaim.UserId);
+            cmd.Parameters.AddWithValue("@claimType", userClaim.ClaimType, null);
+            cmd.Parameters.AddWithValue("@claimValue", userClaim.ClaimValue, null);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<IList<UserClaim>> GetUserClaimsAsync(int userId, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUserClaims"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userId);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUserClaims");
+            cmd.Parameters.AddWithValue("@userId", userId);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.ReadAll(ReadUserClaim);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.ReadAll(ReadUserClaim);
         }
 
         public async Task ReplaceUserClaimAsync(UserClaim userClaim, UserClaim newUserClaim, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("ReplaceUserClaim"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userClaim.UserId);
-                cmd.Parameters.AddWithValue("@claimType", userClaim.ClaimType, null);
-                cmd.Parameters.AddWithValue("@claimValue", userClaim.ClaimValue, null);
-                cmd.Parameters.AddWithValue("@newClaimType", newUserClaim.ClaimType, null);
-                cmd.Parameters.AddWithValue("@newClaimValue", newUserClaim.ClaimValue, null);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("ReplaceUserClaim");
+            cmd.Parameters.AddWithValue("@userId", userClaim.UserId);
+            cmd.Parameters.AddWithValue("@claimType", userClaim.ClaimType, null);
+            cmd.Parameters.AddWithValue("@claimValue", userClaim.ClaimValue, null);
+            cmd.Parameters.AddWithValue("@newClaimType", newUserClaim.ClaimType, null);
+            cmd.Parameters.AddWithValue("@newClaimValue", newUserClaim.ClaimValue, null);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task DeleteUserClaimAsync(int userId, string type, string value, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("DeleteUserClaim"))
-            {
-                cmd.Parameters.AddWithValue("@userId", userId);
-                cmd.Parameters.AddWithValue("@claimType", type);
-                cmd.Parameters.AddWithValue("@claimValue", value);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("DeleteUserClaim");
+            cmd.Parameters.AddWithValue("@userId", userId);
+            cmd.Parameters.AddWithValue("@claimType", type);
+            cmd.Parameters.AddWithValue("@claimValue", value);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<IList<User>> GetUsersForClaim(string type, string value, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUsersForClaim"))
-            {
-                cmd.Parameters.AddWithValue("@type", type);
-                cmd.Parameters.AddWithValue("@value", value);
+            using SqlConnection con = await GetConnectionAsync(token) ;
+            using SqlCommand cmd = con.StoredProcedure("GetUsersForClaim") ;
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.ReadAll(ReadUser);
-                }
-            }
+            cmd.Parameters.AddWithValue("@type", type);
+            cmd.Parameters.AddWithValue("@value", value);
+
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.ReadAll(ReadUser);
         }
 
         private UserClaim ReadUserClaim(IDataReader rdr)
@@ -729,13 +654,12 @@ namespace WebsiteTemplate.Data
 
         public async Task AddLogAsync(char type, string message, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("AddLog"))
-            {
-                cmd.Parameters.AddWithValue("@type", type.ToString());
-                cmd.Parameters.AddWithValue("@message", message);
-                await cmd.ExecuteNonQueryAsync(token);
-            }
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("AddLog");
+            cmd.Parameters.AddWithValue("@type", type.ToString());
+            cmd.Parameters.AddWithValue("@message", message);
+
+            await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<int> DeleteOldLogsAsync(TimeSpan? maxAge, CancellationToken token)
@@ -745,27 +669,22 @@ namespace WebsiteTemplate.Data
             if (maxAge.HasValue)
                 minTime = DateTime.UtcNow - maxAge;
 
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("DeleteOldLogs"))
-            {
-                cmd.Parameters.AddWithValue("@minTime", minTime, null);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("DeleteOldLogs");
+            cmd.Parameters.AddWithValue("@minTime", minTime, null);
 
-                return await cmd.ExecuteNonQueryAsync(token);
-            }
+            return await cmd.ExecuteNonQueryAsync(token);
         }
 
         public async Task<IList<LogItem>> GetUnreadLogs(string type, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUnreadLogs"))
-            {
-                cmd.Parameters.AddWithValue("@type", type, null);
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUnreadLogs");
+            cmd.Parameters.AddWithValue("@type", type, null);
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    return rdr.ReadAll(ReadLog);
-                }
-            }
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            return rdr.ReadAll(ReadLog);
         }
 
         private LogItem ReadLog(IDataReader rdr)
@@ -788,61 +707,55 @@ namespace WebsiteTemplate.Data
 
         public async Task<SiteInfo> GetAdminStats(DateTime maxAge, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetAdminStats"))
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetAdminStats");
+            cmd.Parameters.AddWithValue("@maxAge", maxAge);
+            cmd.Parameters.AddWithValue("@logItems", 50);
+
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            SiteInfo info = new SiteInfo();
+
+            if (await rdr.ReadAsync(token))
             {
-                cmd.Parameters.AddWithValue("@maxAge", maxAge);
-                cmd.Parameters.AddWithValue("@logItems", 50);
+                info.UsersCount = rdr.GetValue<int>("UsersCount");
+                info.LoginAttemptCount = rdr.GetValue<int>("LoginAttemptCount");
 
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
-                {
-                    SiteInfo info = new SiteInfo();
-
-                    if (await rdr.ReadAsync(token))
-                    {
-                        info.UsersCount = rdr.GetValue<int>("UsersCount");
-                        info.LoginAttemptCount = rdr.GetValue<int>("LoginAttemptCount");
-
-                        info.UsersNewCount = rdr.GetValue<int>("UsersNewCount");
-                    }
-
-                    await rdr.NextResultAsync(token);
-
-                    while (await rdr.ReadAsync(token))
-                    {
-                        LogItem item = ReadLog(rdr);
-                        info.Logs.Add(item);
-                    }
-
-                    return info;
-                }
+                info.UsersNewCount = rdr.GetValue<int>("UsersNewCount");
             }
+
+            await rdr.NextResultAsync(token);
+
+            while (await rdr.ReadAsync(token))
+            {
+                LogItem item = ReadLog(rdr);
+                info.Logs.Add(item);
+            }
+
+            return info;
         }
 
         public async Task<List<UserInfo>> GetUsersInfo(DateTime maxAge, CancellationToken token)
         {
-            using (SqlConnection con = await GetConnectionAsync(token))
-            using (SqlCommand cmd = con.StoredProcedure("GetUserAllInfo"))
+            using SqlConnection con = await GetConnectionAsync(token);
+            using SqlCommand cmd = con.StoredProcedure("GetUserAllInfo");
+            cmd.Parameters.AddWithValue("@maxAge", maxAge);
+
+            using SqlDataReader rdr = await cmd.ExecuteReaderAsync(token);
+
+            List<UserInfo> infos = new List<UserInfo>();
+            while (await rdr.ReadAsync(token))
             {
-                cmd.Parameters.AddWithValue("@maxAge", maxAge);
-
-                using (SqlDataReader rdr = await cmd.ExecuteReaderAsync(token))
+                UserInfo info = new UserInfo()
                 {
-                    List<UserInfo> infos = new List<UserInfo>();
-                    while (await rdr.ReadAsync(token))
-                    {
-                        UserInfo info = new UserInfo()
-                        {
-                            User = ReadUser(rdr),
-                            LoginCount = rdr.GetValue<int>("LoginCount"),
-                        };
+                    User = ReadUser(rdr),
+                    LoginCount = rdr.GetValue<int>("LoginCount"),
+                };
 
-                        infos.Add(info);
-                    }
-                    return infos;
-                }
-
+                infos.Add(info);
             }
+
+            return infos;
         }
 
         #endregion

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.1" />
@@ -23,7 +24,6 @@
     </PackageReference>
     <PackageReference Include="SystemPlus.Data" Version="1.0.0" />
     <PackageReference Include="SystemPlus.Web" Version="1.0.0" />
-    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>
