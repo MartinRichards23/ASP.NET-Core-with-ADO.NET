@@ -112,7 +112,7 @@ namespace WebsiteTemplate.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
-            return RedirectToAction(nameof(Login), new { returnUrl = returnUrl });
+            return RedirectToAction(nameof(Login), new { returnUrl });
         }
 
         [HttpPost]
@@ -169,7 +169,7 @@ namespace WebsiteTemplate.Controllers
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    string callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code = code }, protocol: Request.Scheme);
+                    string callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code }, protocol: Request.Scheme);
 
                     await _signInManager.SignInAsync(user, isPersistent: true);
 
